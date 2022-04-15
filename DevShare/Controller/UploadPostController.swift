@@ -89,6 +89,7 @@ class UploadPostController: UIViewController {
         view.backgroundColor = .white
         
         navigationItem.title = "Upload Post"
+//        navigationController?.navigationBar.backgroundColor = .white
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: .done, target: self, action: #selector(didTapDone))

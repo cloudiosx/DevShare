@@ -31,7 +31,7 @@ extension UIColor {
         if #available(iOS 13, *) {
             return .label
         }
-        return .black
+        return .white
     }
     
     static var ypSecondaryLabel: UIColor {

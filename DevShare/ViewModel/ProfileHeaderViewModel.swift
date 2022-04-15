@@ -9,7 +9,23 @@ import UIKit
 
 struct ProfileHeaderViewModel {
     
-    let user: User
+    private var user: User
+    
+    init(user: User) {
+        self.user = user
+    }
+    
+    func getUser() -> User {
+        return self.user
+    }
+    
+    mutating func setUser(value: User) {
+        self.user = value
+    }
+    
+    func isCurrentUser() -> Bool {
+        return user.isCurrentUser
+    }
     
     var username: String {
         return user.username
@@ -32,19 +48,15 @@ struct ProfileHeaderViewModel {
     }
     
     var followButtonText: String {
-        if user.isCurrentUser {
-            return "Edit Profile"
-        }
-        
         return user.isFollowed ? "Following" : "Follow"
     }
     
     var followButtonBackgroundColor: UIColor {
-        return user.isCurrentUser ? .white : .systemBlue
+        return user.isFollowed ? .white : .systemBlue
     }
     
     var followButtonTextColor: UIColor {
-        return user.isCurrentUser ? .black : .white
+        return user.isFollowed ? .black : .white
     }
     
     func attributedUserStats(number: Int, label: String) -> NSAttributedString {

@@ -42,7 +42,8 @@ class RegistrationController: UIViewController {
     private let signUpButton: UIButton = {
         let button = AuthenticationButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
-        button.addTarget(self, action: #selector(handleSignIn), for: .touchUpInside)
+        button.addTarget(self, action: #selector(validation), for: .touchUpInside)
+        button.isEnabled = true
         return button
     }()
     
@@ -105,23 +106,44 @@ class RegistrationController: UIViewController {
     
     // MARK: - Actions
     
-    @objc func handleSignIn() {
-        guard let email = emailTextfield.text else { return }
-        guard let password = passwordTextfield.text else { return }
-        guard let fullname = fullnameTextfield.text else { return }
-        guard let username = usernameTextfield.text else { return }
-        guard let profileImage = self.profileImage else { return }
-        
-        let authCredentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
-        
-        AuthService.registerUser(withCredentials: authCredentials) { (error) in
-            if let e = error {
-                print("There was an error registering the user \(e.localizedDescription)")
-                return
+    @objc func validation() {
+        guard let emailText = emailTextfield.text, emailText != "" else {
+            showAlert(message: "Email is empty") {
+                self.emailTextfield.becomeFirstResponder()
             }
-            
-            self.authenticationDelegate?.authenticationDidComplete()
+            return
         }
+        
+        guard let passwordText = passwordTextfield.text, passwordText != "" else {
+            showAlert(message: "Password is empty") {
+                self.passwordTextfield.becomeFirstResponder()
+            }
+            return
+        }
+        
+        guard let usernameText = usernameTextfield.text, usernameText != "" else {
+            showAlert(message: "Username is empty") {
+                self.usernameTextfield.becomeFirstResponder()
+            }
+            return
+        }
+        
+        
+        guard let fullnameText = fullnameTextfield.text, fullnameText != "" else {
+            showAlert(message: "Fullname is empty") {
+                self.fullnameTextfield.becomeFirstResponder()
+            }
+            return
+        }
+        
+        guard let profileImage = self.profileImage else {
+            showAlert(message: "Please select profile image", usingCompletionHandler: {})
+            return
+        }
+        
+        self.handleSignIn(email: emailText, password: passwordText, fullName: fullnameText, username: usernameText, profileImage: profileImage)
+        
+        return
     }
     
     @objc func handleAddPhoto() {
@@ -174,6 +196,29 @@ class RegistrationController: UIViewController {
     }
     
     // MARK: - Helpers
+    
+    func handleSignIn(email: String, password: String, fullName: String, username: String, profileImage: UIImage) {
+        let authCredentials = AuthCredentials(email: email, password: password, fullname: fullName, username: username, profileImage: profileImage)
+        
+        AuthService.registerUser(withCredentials: authCredentials) { (error) in
+            if let e = error {
+                print("There was an error registering the user \(e.localizedDescription)")
+                return
+            }
+            
+            self.authenticationDelegate?.authenticationDidComplete()
+        }
+    }
+    
+    func showAlert(message: String, usingCompletionHandler handler: @escaping (() -> Void)) {
+        let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: {
+            (action) in
+            handler()
+        })
+        alertController.addAction(alertAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
     
     func configureUI() {
         configureGradientLayer()

@@ -97,13 +97,7 @@ class ProfileHeader: UICollectionReusableView {
         username.anchor(top: profileImageView.bottomAnchor, paddingTop: 12)
         username.centerX(inView: profileImageView)
         
-        addSubview(blockButton)
-        blockButton.anchor(top: profileImageView.bottomAnchor, right: rightAnchor, paddingTop: 20, paddingRight: 24)
-        
         configureUserStatsStackview()
-        
-        addSubview(editProfileFollowButton)
-        editProfileFollowButton.anchor(top: followingLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 24, paddingLeft: 24, paddingBottom: 24, paddingRight: 24)
         
     }
     
@@ -111,16 +105,26 @@ class ProfileHeader: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setProfileButtons() {
+        if !(profileHeaderViewModel?.isCurrentUser() ?? false) {
+            addSubview(blockButton)
+            blockButton.anchor(top: profileImageView.bottomAnchor, right: rightAnchor, paddingTop: 20, paddingRight: 24)
+            
+            addSubview(editProfileFollowButton)
+            editProfileFollowButton.anchor(top: followingLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 24, paddingLeft: 24, paddingBottom: 24, paddingRight: 24)
+        }
+    }
+    
     // MARK: - Actions
     
     @objc func handleEditProfileFollowButton() {
         guard let safelyUnwrappedViewModel = profileHeaderViewModel else { return }
-        profileHeaderDelegate?.header(self, safelyUnwrappedViewModel.user)
+        profileHeaderDelegate?.header(self, safelyUnwrappedViewModel.getUser())
     }
     
     @objc func blockUser() {
         guard let profileHeaderViewModel = profileHeaderViewModel else { return }
-        profileHeaderDelegate?.showAlertController(self, report: profileHeaderViewModel.user)
+        profileHeaderDelegate?.showAlertController(self, report: profileHeaderViewModel.getUser())
     }
     
     // MARK: - Helpers
@@ -139,6 +143,8 @@ class ProfileHeader: UICollectionReusableView {
         editProfileFollowButton.setTitle(safelyUnwrappedViewModel.followButtonText, for: .normal)
         editProfileFollowButton.setTitleColor(safelyUnwrappedViewModel.followButtonTextColor, for: .normal)
         editProfileFollowButton.backgroundColor = safelyUnwrappedViewModel.followButtonBackgroundColor
+        
+        setProfileButtons()
     }
     
     func configureUserStatsStackview() {

@@ -40,7 +40,8 @@ class LoginController: UIViewController {
     private let loginButton: UIButton = {
         let button = AuthenticationButton()
         button.setTitle("Log In", for: .normal)
-        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        button.addTarget(self, action: #selector(validation), for: .touchUpInside)
+        button.isEnabled = true
         return button
     }()
     
@@ -61,18 +62,26 @@ class LoginController: UIViewController {
     
     // MARK: - Actions
     
-    @objc func handleLogin() {
-        guard let email = emailTextField.text?.lowercased() else { return }
-        guard let password = passwordTextField.text else { return }
-        
-        AuthService.logUserIn(withEmail: email, withPassword: password) { (authDataResult, error) in
-            if let e = error {
-                print("There was an error logging the user in \(e.localizedDescription)")
-                return
+    @objc func validation() {
+        guard let emailText = emailTextField.text, emailText != "" else {
+            showAlert(message: "Email is empty") {
+                self.emailTextField.becomeFirstResponder()
             }
             
-            self.authenticationDelegate?.authenticationDidComplete()
+            return
         }
+        
+        guard let passwordText = passwordTextField.text, passwordText != "" else {
+            showAlert(message: "Password is empty") {
+                self.passwordTextField.becomeFirstResponder()
+            }
+            
+            return
+        }
+        
+        self.handleLogin(email: emailText, password: passwordText)
+        
+        return
     }
     
     @objc func handleShowRegistrationController() {
@@ -93,6 +102,27 @@ class LoginController: UIViewController {
     
     // MARK: - Helpers
     
+    func handleLogin(email: String, password: String) {
+        AuthService.logUserIn(withEmail: email, withPassword: password) { (authDataResult, error) in
+            if let e = error {
+                print("There was an error logging the user in \(e.localizedDescription)")
+                return
+            }
+            
+            self.authenticationDelegate?.authenticationDidComplete()
+        }
+    }
+    
+    func showAlert(message: String, usingCompletionHandler handler: @escaping (() -> Void)) {
+        let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: {
+            (action) in
+            handler()
+        })
+        alertController.addAction(alertAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     func configureUI() {
         configureGradientLayer()
         configureNavigationBar()
@@ -104,9 +134,9 @@ class LoginController: UIViewController {
         
         configureAuthenticationStackview()
         
-//        view.addSubview(dontHaveAccountButton)
-//        dontHaveAccountButton.centerX(inView: view)
-//        dontHaveAccountButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor)
+        //        view.addSubview(dontHaveAccountButton)
+        //        dontHaveAccountButton.centerX(inView: view)
+        //        dontHaveAccountButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor)
     }
     
     func configureNavigationBar() {
@@ -134,6 +164,6 @@ extension LoginController: FormViewModel {
     func updateForm() {
         loginButton.backgroundColor = loginViewModel.buttonBackgroundColor
         loginButton.setTitleColor(loginViewModel.buttonTextColor, for: .normal)
-        loginButton.isEnabled = loginViewModel.formIsValid
+//        loginButton.isEnabled = loginViewModel.formIsValid
     }
 }

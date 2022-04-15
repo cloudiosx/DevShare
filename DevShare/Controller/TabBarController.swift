@@ -60,7 +60,7 @@ class TabBarController: UITabBarController {
         let feedController = navigationController(rootViewController: FeedController(user: user), unselectedImage: #imageLiteral(resourceName: "home"), selectedImage: #imageLiteral(resourceName: "home copy"), title: "Feed")
         let searchController = navigationController(rootViewController: SearchController(), unselectedImage: #imageLiteral(resourceName: "search"), selectedImage: #imageLiteral(resourceName: "search copy"), title: "Search")
         let imageSelectorController = navigationController(rootViewController: ImageSelectorController(), unselectedImage: #imageLiteral(resourceName: "upload"), selectedImage: #imageLiteral(resourceName: "upload"), title: "Upload")
-        
+
         let profileController = navigationController(rootViewController: ProfileController(user: user), unselectedImage: #imageLiteral(resourceName: "user"), selectedImage: #imageLiteral(resourceName: "user (1)"), title: "Profile")
         
         viewControllers = [feedController, searchController, imageSelectorController, profileController]
@@ -74,7 +74,7 @@ class TabBarController: UITabBarController {
         navigationController.tabBarItem.image = unselectedImage
         navigationController.tabBarItem.selectedImage = selectedImage
         navigationController.tabBarItem.title = title
-        navigationController.navigationBar.tintColor = .black
+        navigationController.navigationBar.tintColor = .white
         return navigationController
     }
     
@@ -92,6 +92,11 @@ class TabBarController: UITabBarController {
                 self.present(navigationController, animated: false, completion: nil)
             }
         }
+        
+        // https://github.com/Yummypets/YPImagePicker/issues/690
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        picker.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
     
 }
