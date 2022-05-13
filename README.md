@@ -8,7 +8,7 @@ Make sharing your work with others as simple as with a few clicks on your mobile
 
 ## Features
 
-1. User authentication (Register & Login)
+1. User authentication (Registration & Login)
 2. View a post
 3. Like & unlike a post
 4. Comment on a post
