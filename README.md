@@ -9,8 +9,18 @@ Make sharing your work with others as simple as with a few clicks on your mobile
 ## Features
 
 1. User authentication (Register & Login)
-2. Post uploading
-3. Share posts with others
+2. View a post
+3. Like & unlike a post
+4. Comment on a post
+5. Upload a post
+6. Share a post with others
+7. Block & report a user
+
+## Future Changes
+
+1. Adaptation to dark mode
+2. Allow users to edit or delete their own comments
+3. Make right bar button item in profile page visible to allow users to access settings such as being able to log out, terms & conditions, privacy policy, and view a list of their blocked users
 
 ## Latest Changes
 
